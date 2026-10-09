@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free BMI calculator and calorie tracker. Calculate your Body Mass Index, daily calorie needs, and track your fitness progress over time.">
+    <meta name="keywords" content="BMI calculator, calorie calculator, fitness tracker, health tracker, weight loss, TDEE calculator">
+
+    <!-- Social Media Meta Tags -->
+    <meta property="og:title" content="Health & Fitness Tracker - Free BMI & Calorie Calculator">
+    <meta property="og:description" content="Track your BMI, calculate daily calorie needs, and monitor your fitness progress with interactive charts.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630/10b981/0a0f1a?text=Health+Tracker">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Health & Fitness Tracker">
+    <meta name="twitter:description" content="Track your BMI, calculate daily calorie needs, and monitor your fitness progress.">
+    <meta name="twitter:image" content="https://via.placeholder.com/1200x630/10b981/0a0f1a?text=Health+Tracker">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>💪</text></svg>">
+
+    <title>Health & Fitness Tracker - Free BMI & Calorie Calculator</title>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        // Replace 'GA_MEASUREMENT_ID' with your actual Google Analytics ID
+        // gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a0f1a;
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header-label {
+            font-size: 0.75em;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #6b7280;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: #ffffff;
+            font-weight: 400;
+            line-height: 1.2;
+        }
+
+        .header p {
+            font-size: 1em;
+            color: #9ca3af;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .nav-link {
+            padding: 10px 20px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            color: #9ca3af;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #374151;
+            color: #10b981;
+        }
+
+        .nav-link.active {
+            background: #10b981;
+            color: #0a0f1a;
+            border-color: #10b981;
+        }
+
+        .card {
+            background: #111827;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #1f2937;
+        }
+
+        .card h2 {
+            font-family: Georgia, 'Times New Roman', serif;
+            color: #ffffff;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            font-weight: 400;
+            border-bottom: 1px solid #1f2937;
+            padding-bottom: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #9ca3af;
+            font-size: 0.9em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: #1f2937;
+            color: #e0e0e0;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #10b981;
+            background: #111827;
+        }
+
+        button {
+            background: #10b981;
+            color: #0a0f1a;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding: 0;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+            padding: 20px;
+            background: #1f2937;
+            border-radius: 8px;
+            border-left: 3px solid #10b981;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-item strong {
+            color: #9ca3af;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .result-item span {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .bmi-category {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+
+        .underweight { background: #fbbf24; color: #0a0f1a; }
+        .normal { background: #10b981; color: #0a0f1a; }
+        .overweight { background: #f59e0b; color: #0a0f1a; }
+        .obese { background: #ef4444; color: #ffffff; }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 30px 0;
+            padding: 20px;
+            background: #1f2937;
+            border-radius: 10px;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .chart-btn {
+            background: #374151;
+            color: #e0e0e0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            width: auto;
+        }
+
+        .chart-btn:hover {
+            background: #4b5563;
+            transform: none;
+        }
+
+        .chart-btn.active {
+            background: #10b981;
+            color: #0a0f1a;
+        }
+
+        .section-toggle {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 5px;
+            background: #1f2937;
+            border-radius: 8px;
+            width: fit-content;
+        }
+
+        .toggle-btn {
+            background: transparent;
+            color: #9ca3af;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            width: auto;
+        }
+
+        .toggle-btn:hover {
+            color: #e0e0e0;
+            transform: none;
+        }
+
+        .toggle-btn.active {
+            background: #10b981;
+            color: #0a0f1a;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .history-table th {
+            background: #1f2937;
+            color: #9ca3af;
+            padding: 14px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #374151;
+        }
+
+        .history-table td {
+            padding: 16px 14px;
+            border-bottom: 1px solid #1f2937;
+            color: #e0e0e0;
+        }
+
+        .history-table tr:hover {
+            background: #1f2937;
+        }
+
+        .delete-btn {
+            background: #374151;
+            color: #e0e0e0;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            width: auto;
+        }
+
+        .delete-btn:hover {
+            background: #ef4444;
+            color: #ffffff;
+            transform: none;
+        }
+
+        .export-btn {
+            background: #374151;
+            color: #e0e0e0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            width: auto;
+            margin-top: 20px;
+        }
+
+        .export-btn:hover {
+            background: #10b981;
+            color: #0a0f1a;
+            transform: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state p {
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .result-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-label">Health & Fitness</div>
+            <h1>Track your body metrics,<br>optimize your health.</h1>
+            <p>Calculate BMI, daily calorie needs, and monitor your progress over time with detailed tracking.</p>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html" class="nav-link active">BMI & Calorie Tracker</a>
+            <a href="body-fat-calculator.html" class="nav-link">Body Fat Calculator</a>
+        </div>
+
+        <div class="card">
+            <h2>Calculate Your Metrics</h2>
+            <div class="input-group">
+                <div class="input-row">
+                    <div>
+                        <label for="height">Height</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="height" placeholder="e.g., 177" step="0.1" min="0" style="flex: 1;">
+                            <select id="height-unit" style="flex: 0 0 100px;">
+                                <option value="cm">cm</option>
+                                <option value="ft">ft/in</option>
+                            </select>
+                        </div>
+                        <div id="height-inches-group" style="display: none; margin-top: 10px;">
+                            <label for="height-inches">Inches</label>
+                            <input type="number" id="height-inches" placeholder="e.g., 8" step="1" min="0" max="11">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="weight">Weight</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="weight" placeholder="e.g., 77" step="0.1" min="0" style="flex: 1;">
+                            <select id="weight-unit" style="flex: 0 0 100px;">
+                                <option value="kg">kg</option>
+                                <option value="lbs">lbs</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div>
+                        <label for="age">Age (years)</label>
+                        <input type="number" id="age" placeholder="e.g., 20" min="10" max="120">
+                    </div>
+                    <div>
+                        <label for="gender">Gender</label>
+                        <select id="gender">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label>Activity Level</label>
+                    <select id="activity">
+                        <option value="1.2">Sedentary (little or no exercise)</option>
+                        <option value="1.375">Lightly active (exercise 1-3 days/week)</option>
+                        <option value="1.55" selected>Moderately active (exercise 3-5 days/week)</option>
+                        <option value="1.725">Very active (exercise 6-7 days/week)</option>
+                        <option value="1.9">Extra active (physical job + exercise daily)</option>
+                    </select>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <label>Goal</label>
+                    <select id="goal">
+                        <option value="lose">Lose weight (fat loss)</option>
+                        <option value="maintain" selected>Maintain weight</option>
+                        <option value="gain">Gain weight (muscle gain)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="calculate()">Calculate & Save</button>
+
+            <div id="results" class="results">
+                <div class="result-item">
+                    <strong>BMI:</strong>
+                    <span><span id="bmi-value"></span> <span id="bmi-category" class="bmi-category"></span></span>
+                </div>
+                <div class="result-item">
+                    <strong>BMR (Base Metabolic Rate):</strong>
+                    <span id="bmr-value"></span>
+                </div>
+                <div class="result-item">
+                    <strong>TDEE (Maintenance Calories):</strong>
+                    <span id="tdee-value"></span>
+                </div>
+                <div class="result-item">
+                    <strong>Recommended Calorie Intake:</strong>
+                    <span id="recommended-calories"></span>
+                </div>
+                <div class="result-item">
+                    <strong>Protein Target:</strong>
+                    <span id="protein-target"></span>
+                </div>
+                <div class="result-item">
+                    <strong>Estimated Body Fat %:</strong>
+                    <span id="body-fat"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Your Progress History</h2>
+
+            <div class="section-toggle">
+                <button class="toggle-btn active" onclick="toggleView('chart')">Chart View</button>
+                <button class="toggle-btn" onclick="toggleView('table')">Table View</button>
+            </div>
+
+            <button class="export-btn" onclick="exportToCSV()" style="float: right; margin-top: -45px;">📊 Export to CSV</button>
+            <div style="clear: both;"></div>
+
+            <div id="chart-view">
+                <div id="chart-empty" class="empty-state">
+                    <p>No data to display yet. Calculate your metrics above to start tracking your progress!</p>
+                </div>
+                <div id="chart-content" style="display: none;">
+                    <div class="chart-controls">
+                        <button class="chart-btn active" onclick="updateChart('weight')">Weight</button>
+                        <button class="chart-btn" onclick="updateChart('bmi')">BMI</button>
+                        <button class="chart-btn" onclick="updateChart('bodyfat')">Body Fat %</button>
+                        <button class="chart-btn" onclick="updateChart('calories')">Calories</button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="table-view" style="display: none;">
+                <div id="history-content">
+                    <div class="empty-state">
+                        <p>No records yet. Calculate your metrics above to start tracking!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="border-left: 3px solid #10b981;">
+            <h2 style="font-size: 1.2em; border: none; padding: 0; margin-bottom: 15px;">ℹ️ Important Information</h2>
+            <p style="color: #9ca3af; font-size: 0.95em; line-height: 1.6; margin-bottom: 10px;">
+                <strong style="color: #ffffff;">Disclaimer:</strong> This tool provides estimates for educational and informational purposes only. BMI and calorie calculations are general guidelines and may not be accurate for athletes, pregnant women, elderly individuals, or those with medical conditions. Always consult with a healthcare professional or registered dietitian before making significant changes to your diet or exercise routine.
+            </p>
+            <p style="color: #9ca3af; font-size: 0.95em; line-height: 1.6;">
+                <strong style="color: #ffffff;">Privacy:</strong> All your data is stored locally in your browser. Nothing is sent to any server. Clearing your browser data will delete your history.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let progressChart = null;
+        let currentChartType = 'weight';
+        let currentView = 'chart';
+
+        window.addEventListener('load', function() {
+            setupUnitToggle();
+            loadLastEntry();
+            setTimeout(() => {
+                initChart();
+                loadHistory();
+            }, 100);
+        });
+
+        function setupUnitToggle() {
+            document.getElementById('height-unit').addEventListener('change', function() {
+                const inchesGroup = document.getElementById('height-inches-group');
+                const heightInput = document.getElementById('height');
+
+                if (this.value === 'ft') {
+                    inchesGroup.style.display = 'block';
+                    heightInput.placeholder = 'e.g., 5';
+                    heightInput.max = '8';
+                } else {
+                    inchesGroup.style.display = 'none';
+                    heightInput.placeholder = 'e.g., 177';
+                    heightInput.max = '250';
+                }
+            });
+        }
+
+        function toggleView(view) {
+            currentView = view;
+            const chartView = document.getElementById('chart-view');
+            const tableView = document.getElementById('table-view');
+            const toggleBtns = document.querySelectorAll('.toggle-btn');
+
+            if (view === 'chart') {
+                chartView.style.display = 'block';
+                tableView.style.display = 'none';
+                toggleBtns[0].classList.add('active');
+                toggleBtns[1].classList.remove('active');
+                if (progressChart) updateChart(currentChartType);
+            } else {
+                chartView.style.display = 'none';
+                tableView.style.display = 'block';
+                toggleBtns[0].classList.remove('active');
+                toggleBtns[1].classList.add('active');
+            }
+        }
+
+        function initChart() {
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js not loaded, retrying...');
+                setTimeout(initChart, 500);
+                return;
+            }
+
+            const ctx = document.getElementById('progressChart');
+            if (!ctx) {
+                console.error('Canvas not found');
+                return;
+            }
+
+            progressChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Weight (kg)',
+                        data: [],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: '#10b981',
+                        pointBorderColor: '#0a0f1a',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                color: '#e0e0e0',
+                                font: { size: 14 }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1f2937',
+                            titleColor: '#e0e0e0',
+                            bodyColor: '#e0e0e0',
+                            borderColor: '#10b981',
+                            borderWidth: 2,
+                            padding: 12
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: '#374151' },
+                            ticks: { color: '#9ca3af' }
+                        },
+                        y: {
+                            grid: { color: '#374151' },
+                            ticks: { color: '#9ca3af' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChart(type) {
+            currentChartType = type;
+
+            const buttons = document.querySelectorAll('.chart-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(type)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const history = JSON.parse(localStorage.getItem('healthHistory') || '[]');
+            if (!progressChart || history.length === 0) return;
+
+            const labels = [];
+            const data = [];
+            let label = '';
+
+            history.forEach(entry => {
+                const date = new Date(entry.date);
+                labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+
+                if (type === 'weight') {
+                    data.push(entry.weightKg.toFixed(1));
+                    label = 'Weight (kg)';
+                } else if (type === 'bmi') {
+                    data.push(parseFloat(entry.bmi));
+                    label = 'BMI';
+                } else if (type === 'bodyfat') {
+                    data.push(parseFloat(entry.bodyFat || 0));
+                    label = 'Body Fat %';
+                } else if (type === 'calories') {
+                    data.push(entry.recommendedCalories);
+                    label = 'Daily Calories';
+                }
+            });
+
+            progressChart.data.labels = labels;
+            progressChart.data.datasets[0].label = label;
+            progressChart.data.datasets[0].data = data;
+            progressChart.update();
+        }
+
+        function convertToMetric(height, heightUnit, heightInches, weight, weightUnit) {
+            let heightCm, weightKg;
+
+            if (heightUnit === 'ft') {
+                const feet = parseFloat(height) || 0;
+                const inches = parseFloat(heightInches) || 0;
+                heightCm = (feet * 12 + inches) * 2.54;
+            } else {
+                heightCm = parseFloat(height);
+            }
+
+            if (weightUnit === 'lbs') {
+                weightKg = parseFloat(weight) * 0.453592;
+            } else {
+                weightKg = parseFloat(weight);
+            }
+
+            return { heightCm, weightKg };
+        }
+
+        function formatHeight(heightCm, unit) {
+            if (unit === 'ft') {
+                const totalInches = heightCm / 2.54;
+                const feet = Math.floor(totalInches / 12);
+                const inches = Math.round(totalInches % 12);
+                return `${feet}'${inches}"`;
+            } else {
+                return heightCm.toFixed(1) + ' cm';
+            }
+        }
+
+        function formatWeight(weightKg, unit) {
+            if (unit === 'lbs') {
+                return (weightKg * 2.20462).toFixed(1) + ' lbs';
+            } else {
+                return weightKg.toFixed(1) + ' kg';
+            }
+        }
+
+        function loadLastEntry() {
+            const history = JSON.parse(localStorage.getItem('healthHistory') || '[]');
+            if (history.length > 0) {
+                const last = history[history.length - 1];
+
+                if (last.heightUnit === 'ft') {
+                    document.getElementById('height-unit').value = 'ft';
+                    document.getElementById('height-inches-group').style.display = 'block';
+                    const totalInches = last.heightCm / 2.54;
+                    document.getElementById('height').value = Math.floor(totalInches / 12);
+                    document.getElementById('height-inches').value = Math.round(totalInches % 12);
+                } else {
+                    document.getElementById('height-unit').value = 'cm';
+                    document.getElementById('height').value = last.heightCm;
+                }
+
+                if (last.weightUnit === 'lbs') {
+                    document.getElementById('weight-unit').value = 'lbs';
+                    document.getElementById('weight').value = (last.weightKg * 2.20462).toFixed(1);
+                } else {
+                    document.getElementById('weight-unit').value = 'kg';
+                    document.getElementById('weight').value = last.weightKg;
+                }
+
+                document.getElementById('age').value = last.age;
+                document.getElementById('gender').value = last.gender;
+                document.getElementById('activity').value = last.activity;
+            }
+        }
+
+        function calculate() {
+            const heightInput = parseFloat(document.getElementById('height').value);
+            const heightUnit = document.getElementById('height-unit').value;
+            const heightInches = document.getElementById('height-inches').value;
+            const weightInput = parseFloat(document.getElementById('weight').value);
+            const weightUnit = document.getElementById('weight-unit').value;
+            const age = parseInt(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
+            const activity = parseFloat(document.getElementById('activity').value);
+            const goal = document.getElementById('goal').value;
+
+            if (!heightInput || !weightInput || !age) {
+                alert('Please fill in all fields!');
+                return;
+            }
+
+            const { heightCm, weightKg } = convertToMetric(heightInput, heightUnit, heightInches, weightInput, weightUnit);
+
+            const heightM = heightCm / 100;
+            const bmi = (weightKg / (heightM * heightM)).toFixed(1);
+
+            let category = '';
+            let categoryClass = '';
+            if (bmi < 18.5) {
+                category = 'Underweight';
+                categoryClass = 'underweight';
+            } else if (bmi < 25) {
+                category = 'Normal';
+                categoryClass = 'normal';
+            } else if (bmi < 30) {
+                category = 'Overweight';
+                categoryClass = 'overweight';
+            } else {
+                category = 'Obese';
+                categoryClass = 'obese';
+            }
+
+            let bmr;
+            if (gender === 'male') {
+                bmr = 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
+            } else {
+                bmr = 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
+            }
+
+            const tdee = bmr * activity;
+
+            let recommendedCalories;
+            if (goal === 'lose') {
+                recommendedCalories = tdee - 500;
+            } else if (goal === 'gain') {
+                recommendedCalories = tdee + 300;
+            } else {
+                recommendedCalories = tdee;
+            }
+
+            const protein = (weightKg * 1.8).toFixed(0);
+
+            let bodyFat;
+            if (gender === 'male') {
+                bodyFat = (1.20 * bmi) + (0.23 * age) - 16.2;
+            } else {
+                bodyFat = (1.20 * bmi) + (0.23 * age) - 5.4;
+            }
+            bodyFat = Math.max(3, Math.min(50, bodyFat));
+
+            document.getElementById('bmi-value').textContent = bmi;
+            document.getElementById('bmi-category').textContent = category;
+            document.getElementById('bmi-category').className = 'bmi-category ' + categoryClass;
+            document.getElementById('bmr-value').textContent = Math.round(bmr) + ' cal/day';
+            document.getElementById('tdee-value').textContent = Math.round(tdee) + ' cal/day';
+            document.getElementById('recommended-calories').textContent = Math.round(recommendedCalories) + ' cal/day';
+            document.getElementById('protein-target').textContent = protein + ' g/day';
+            document.getElementById('body-fat').textContent = bodyFat.toFixed(1) + '%';
+
+            document.getElementById('results').classList.add('show');
+
+            saveToHistory({
+                date: new Date().toISOString(),
+                heightCm: heightCm,
+                heightUnit: heightUnit,
+                weightKg: weightKg,
+                weightUnit: weightUnit,
+                age: age,
+                gender: gender,
+                activity: activity,
+                goal: goal,
+                bmi: bmi,
+                bmr: Math.round(bmr),
+                tdee: Math.round(tdee),
+                recommendedCalories: Math.round(recommendedCalories),
+                protein: protein,
+                bodyFat: bodyFat.toFixed(1),
+                category: category
+            });
+
+            loadHistory();
+        }
+
+        function saveToHistory(data) {
+            let history = JSON.parse(localStorage.getItem('healthHistory') || '[]');
+            history.push(data);
+            localStorage.setItem('healthHistory', JSON.stringify(history));
+        }
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('healthHistory') || '[]');
+            const container = document.getElementById('history-content');
+            const chartEmpty = document.getElementById('chart-empty');
+            const chartContent = document.getElementById('chart-content');
+
+            if (history.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No records yet. Calculate your metrics above to start tracking!</p></div>';
+                if (chartEmpty) chartEmpty.style.display = 'block';
+                if (chartContent) chartContent.style.display = 'none';
+                return;
+            }
+
+            if (chartEmpty) chartEmpty.style.display = 'none';
+            if (chartContent) chartContent.style.display = 'block';
+
+            if (currentView === 'chart' && progressChart) {
+                updateChart(currentChartType);
+            }
+
+            let tableHTML = `
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Height</th>
+                            <th>Weight</th>
+                            <th>BMI</th>
+                            <th>Category</th>
+                            <th>Daily Calories</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            history.slice().reverse().forEach((entry, index) => {
+                const date = new Date(entry.date);
+                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                const actualIndex = history.length - 1 - index;
+                const heightDisplay = formatHeight(entry.heightCm, entry.heightUnit || 'cm');
+                const weightDisplay = formatWeight(entry.weightKg, entry.weightUnit || 'kg');
+
+                tableHTML += `
+                    <tr>
+                        <td>${formattedDate}</td>
+                        <td>${heightDisplay}</td>
+                        <td>${weightDisplay}</td>
+                        <td>${entry.bmi}</td>
+                        <td>${entry.category}</td>
+                        <td>${entry.recommendedCalories}</td>
+                        <td><button class="delete-btn" onclick="deleteEntry(${actualIndex})">Delete</button></td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += '</tbody></table>';
+            container.innerHTML = tableHTML;
+        }
+
+        function deleteEntry(index) {
+            if (confirm('Are you sure you want to delete this entry?')) {
+                let history = JSON.parse(localStorage.getItem('healthHistory') || '[]');
+                history.splice(index, 1);
+                localStorage.setItem('healthHistory', JSON.stringify(history));
+                loadHistory();
+            }
+        }
+
+        function exportToCSV() {
+            const history = JSON.parse(localStorage.getItem('healthHistory') || '[]');
+
+            if (history.length === 0) {
+                alert('No data to export. Please add some entries first!');
+                return;
+            }
+
+            let csv = 'Date,Height (cm),Weight (kg),Age,Gender,Activity Level,Goal,BMI,Category,BMR,TDEE,Recommended Calories,Protein (g),Body Fat %\n';
+
+            history.forEach(entry => {
+                const date = new Date(entry.date).toLocaleString();
+                const row = [
+                    date,
+                    entry.heightCm.toFixed(1),
+                    entry.weightKg.toFixed(1),
+                    entry.age,
+                    entry.gender,
+                    entry.activity,
+                    entry.goal,
+                    entry.bmi,
+                    entry.category,
+                    entry.bmr,
+                    entry.tdee,
+                    entry.recommendedCalories,
+                    entry.protein,
+                    entry.bodyFat || 'N/A'
+                ];
+                csv += row.join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'health-tracker-history.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
